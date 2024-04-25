@@ -7,6 +7,7 @@ import (
 
 	"net/http"
 
+	"github.com/TechBowl-japan/go-stations/handler"
 	"github.com/TechBowl-japan/go-stations/db"
 	"github.com/TechBowl-japan/go-stations/handler/router"
 )
@@ -55,8 +56,9 @@ func realMain() error {
 	mux := router.NewRouter(todoDB)
 	// muxはデータベースの操作を含むリクエストの処理をするためのルーティング？
 
-	// TODO: サーバーを8080ポートでlistenする
-	http.ListenAndServe(":8080", mux)
+	mux.Handle("/healthz", handler.NewHealthzHandler())
 
+	// TODO: サーバーを8080ポートでlistenする
+	log.Fatal(http.ListenAndServe(defaultPort, mux))
 	return nil
 }
