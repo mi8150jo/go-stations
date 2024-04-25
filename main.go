@@ -5,6 +5,8 @@ import (
 	"os"
 	"time"
 
+	"net/http"
+
 	"github.com/TechBowl-japan/go-stations/db"
 	"github.com/TechBowl-japan/go-stations/handler/router"
 )
@@ -18,11 +20,13 @@ func main() {
 
 func realMain() error {
 	// config values
+	// サーバーの設定
 	const (
 		defaultPort   = ":8080"
 		defaultDBPath = ".sqlite3/todo.db"
 	)
 
+	// 環境変数？
 	port := os.Getenv("PORT")
 	if port == "" {
 		port = defaultPort
@@ -49,8 +53,10 @@ func realMain() error {
 
 	// NOTE: 新しいエンドポイントの登録はrouter.NewRouterの内部で行うようにする
 	mux := router.NewRouter(todoDB)
+	// muxはデータベースの操作を含むリクエストの処理をするためのルーティング？
 
-	// TODO: サーバーをlistenする
+	// TODO: サーバーを8080ポートでlistenする
+	http.ListenAndServe(":8080", mux)
 
 	return nil
 }
